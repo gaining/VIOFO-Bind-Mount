@@ -68,7 +68,7 @@ You should see your dashcam videos automatically.
 
 ## ⚠️ Notes
 
-Do NOT manually create symlinks in /storage/emulated/0 — Android does not support them.  
+Do NOT manually create symlinks in /storage/emulated/0 as android does not support them.  
 The module uses mount --bind, which is more stable and system-compliant.  
 If the folder is not visible immediately after boot, wait a few seconds for media initialization.
 
