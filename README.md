@@ -1,87 +1,144 @@
 # 📦 VIOFO Bind Mount Module
 
-A universal Android root module that bind-mounts the VIOFO dashcam video folder into DCIM for easier access by gallery apps, file managers, and media tools.
-
-## 🚀 Supported Root Managers
-
-- Magisk  
-- KernelSU Next  
-- APatch  
+A lightweight Android root module that bind-mounts the VIOFO dashcam video directory into DCIM for easier access by gallery apps, file managers, backup tools, and media applications.
 
 ---
 
-## 🎯 What it does
+## 🚀 Supported Root Managers
 
-This module creates a live mirror of:
+* Magisk
+* KernelSU
+* KernelSU Next
+* APatch
 
-/storage/emulated/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO
+---
 
-into:
+## 🎯 What It Does
 
-/storage/emulated/0/DCIM/VIOFO
+This module creates a bind mount from:
 
-It uses a bind mount (not symlink) so it works on Android's restricted /storage/emulated/0 filesystem.
+```text
+/data/media/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO
+```
+
+to:
+
+```text
+/data/media/0/DCIM/VIOFO
+```
+
+This allows apps that normally scan the DCIM folder to access VIOFO recordings without manually navigating Android's restricted `Android/data` directory.
 
 ---
 
 ## ⚙️ Features
 
-✔ Automatic mount at boot  
-✔ Auto-detects when storage is ready  
-✔ Remount-safe (recovers after media reloads)  
-✔ Prevents duplicate mounts  
-✔ Works across Magisk / KernelSU / APatch  
+✔ Automatic mounting after boot
+
+✔ Compatible with Magisk, KernelSU, KernelSU Next, and APatch
+
+✔ Uses bind mounts instead of symlinks
+
+✔ Auto-creates destination directory
+
+✔ Automatic remount checking every 30 seconds
+
+✔ Logging support for troubleshooting
+
+✔ Designed to avoid boot delays
+
+✔ Uses `/data/media/0` for improved reliability
 
 ---
 
 ## 📥 Installation
 
 ### Magisk
-Open Magisk app  
-Go to Modules  
-Tap “Install from storage”  
-Select the ZIP  
-Reboot  
 
-### KernelSU Next
-Open KernelSU app  
-Go to Modules  
-Install ZIP  
-Reboot  
+1. Open Magisk
+2. Go to Modules
+3. Tap "Install from storage"
+4. Select the module ZIP
+5. Reboot
+
+### KernelSU / KernelSU Next
+
+1. Open KernelSU
+2. Go to Modules
+3. Install the ZIP
+4. Reboot
 
 ### APatch
-Open APatch manager  
-Install module ZIP  
-Reboot  
+
+1. Open APatch Manager
+2. Install the module ZIP
+3. Reboot
 
 ---
 
-## 🔄 After installation
+## 📂 Mounted Paths
 
-After reboot, check:
+### Source
 
-/storage/emulated/0/DCIM/VIOFO
+```text
+/data/media/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO
+```
 
-You should see your dashcam videos automatically.
+### Destination
+
+```text
+/data/media/0/DCIM/VIOFO
+```
+
+---
+
+## 📝 Logging
+
+The module writes diagnostic information to:
+
+```text
+/data/local/tmp/viofo_bind.log
+```
+
+This can be useful when troubleshooting mount failures.
+
+---
+
+## 🔄 How It Works
+
+The module runs entirely from `service.sh`.
+
+After Android finishes booting and user storage becomes available:
+
+1. The module waits for `/data/media/0`
+2. Checks whether the VIOFO source directory exists
+3. Creates the destination folder if necessary
+4. Creates a bind mount
+5. Periodically verifies the mount remains active
+
+This approach avoids slowing down the boot process and improves compatibility with KernelSU Next and APatch.
 
 ---
 
 ## ⚠️ Notes
 
-Do NOT manually create symlinks in /storage/emulated/0 as android does not support them.  
-The module uses mount --bind, which is more stable and system-compliant.  
-If the folder is not visible immediately after boot, wait a few seconds for media initialization.
-
----
-
-## 🧠 How it works
-
-Uses Android init boot stages (post-fs-data + service recovery)  
-Applies bind mount when storage becomes available  
-Continuously checks and restores mount if Android remounts storage  
+* This module uses bind mounts, not symbolic links.
+* Android may recreate storage mount namespaces during runtime; the module periodically checks and restores the bind mount if needed.
+* Videos remain stored in their original VIOFO directory.
+* Removing the module does not delete any recordings.
 
 ---
 
 ## 🗑️ Uninstall
 
-Simply remove the module from your root manager and reboot.
+1. Remove the module from your root manager.
+2. Reboot the device.
+
+The bind mount will be removed automatically. Your recordings will remain untouched.
+
+---
+
+## 📄 License
+
+MIT License
+
