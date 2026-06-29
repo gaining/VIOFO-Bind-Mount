@@ -15,7 +15,7 @@ The VIOFO app stores recordings outside of the standard `DCIM` folder, causing s
 This module creates a bind mount from:
 
 ```
-SRC="/data/media/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO"
+/data/media/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO
 ```
 
 to
