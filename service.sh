@@ -2,18 +2,17 @@
 
 MODDIR=${0%/*}
 
-while [ ! -d /data/media/0 ]
-do
-    sleep 2
-done
-
 . "$MODDIR/common/viofo.sh"
 
-while true
-do
-    if ! mountpoint -q "$DST"; then
-        mount_viofo
-    fi
+for i in $(seq 1 30); do
+    [ -d "$SRC" ] || {
+        sleep 2
+        continue
+    }
 
-    sleep 30
+    mount_viofo
+
+    mountpoint -q "$DST" && exit 0
+
+    sleep 2
 done
