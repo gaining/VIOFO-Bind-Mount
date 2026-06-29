@@ -1,144 +1,56 @@
-# 📦 VIOFO Bind Mount Module
+# VIOFO Bind Mount Universal
 
-A lightweight Android root module that bind-mounts the VIOFO dashcam video directory into DCIM for easier access by gallery apps, file managers, backup tools, and media applications.
+Bind mounts the VIOFO recordings folder into `DCIM/VIOFO` so photos and videos captured by the VIOFO app appear in gallery applications that only scan the DCIM directory.
 
----
-
-## 🚀 Supported Root Managers
+Supports:
 
 * Magisk
 * KernelSU
-* KernelSU Next
 * APatch
 
----
+## Why?
 
-## 🎯 What It Does
+The VIOFO app stores recordings outside of the standard `DCIM` folder, causing some gallery apps to ignore them.
 
 This module creates a bind mount from:
 
-```text
-/data/media/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO
+```
+/storage/emulated/0/VIOFO
 ```
 
-to:
+to
 
-```text
-/data/media/0/DCIM/VIOFO
+```
+/storage/emulated/0/DCIM/VIOFO
 ```
 
-This allows apps that normally scan the DCIM folder to access VIOFO recordings without manually navigating Android's restricted `Android/data` directory.
+No files are copied or moved. Both locations point to the same data.
 
----
+## Features
 
-## ⚙️ Features
+* One-time bind mount after boot
+* Automatically waits for Android storage to become available
+* No persistent background service
+* No file duplication
+* Compatible with Magisk, KernelSU, and APatch
 
-✔ Automatic mounting after boot
+## Installation
 
-✔ Compatible with Magisk, KernelSU, KernelSU Next, and APatch
-
-✔ Uses bind mounts instead of symlinks
-
-✔ Auto-creates destination directory
-
-✔ Automatic remount checking every 30 seconds
-
-✔ Logging support for troubleshooting
-
-✔ Designed to avoid boot delays
-
-✔ Uses `/data/media/0` for improved reliability
-
----
-
-## 📥 Installation
-
-### Magisk
-
-1. Open Magisk
-2. Go to Modules
-3. Tap "Install from storage"
-4. Select the module ZIP
-5. Reboot
-
-### KernelSU / KernelSU Next
-
-1. Open KernelSU
-2. Go to Modules
-3. Install the ZIP
-4. Reboot
-
-### APatch
-
-1. Open APatch Manager
-2. Install the module ZIP
-3. Reboot
-
----
-
-## 📂 Mounted Paths
-
-### Source
-
-```text
-/data/media/0/Android/data/com.viofo.dashcam/files/Download/DASHCAM/VIDEO
-```
-
-### Destination
-
-```text
-/data/media/0/DCIM/VIOFO
-```
-
----
-
-## 📝 Logging
-
-The module writes diagnostic information to:
-
-```text
-/data/local/tmp/viofo_bind.log
-```
-
-This can be useful when troubleshooting mount failures.
-
----
-
-## 🔄 How It Works
-
-The module runs entirely from `service.sh`.
-
-After Android finishes booting and user storage becomes available:
-
-1. The module waits for `/data/media/0`
-2. Checks whether the VIOFO source directory exists
-3. Creates the destination folder if necessary
-4. Creates a bind mount
-5. Periodically verifies the mount remains active
-
-This approach avoids slowing down the boot process and improves compatibility with KernelSU Next and APatch.
-
----
-
-## ⚠️ Notes
-
-* This module uses bind mounts, not symbolic links.
-* Android may recreate storage mount namespaces during runtime; the module periodically checks and restores the bind mount if needed.
-* Videos remain stored in their original VIOFO directory.
-* Removing the module does not delete any recordings.
-
----
-
-## 🗑️ Uninstall
-
-1. Remove the module from your root manager.
+1. Flash the ZIP in Magisk, KernelSU, or APatch.
 2. Reboot the device.
+3. Open your preferred gallery app.
+4. The VIOFO recordings should appear under `DCIM/VIOFO`.
 
-The bind mount will be removed automatically. Your recordings will remain untouched.
+## Notes
 
----
+* The module performs the bind mount during boot and then exits. It does not continue running in the background.
+* If the VIOFO folder does not exist yet (for example, before the app has been used), the module will wait briefly during boot before giving up. The bind mount will be created on the next reboot after the folder exists.
 
-## 📄 License
+## Uninstall
+
+Disable or remove the module from your root manager and reboot.
+
+## License
 
 MIT License
 
